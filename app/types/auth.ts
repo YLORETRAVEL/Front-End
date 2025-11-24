@@ -13,7 +13,7 @@ export interface SignUpFormData {
   username: string;
   email: string;
   password: string;
-  confirmPassword: string;
+  
 }
 
 export interface ForgotPasswordFormData {
@@ -22,6 +22,6 @@ export interface ForgotPasswordFormData {
 
 export interface ResetPasswordFormData {
   password: string;
-  confirmPassword: string;
+  
   token?: string;
 }
