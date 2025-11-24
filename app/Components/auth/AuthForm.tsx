@@ -200,8 +200,8 @@ export default function AuthForm({ type }: AuthFormProps) {
 
             {/* Actual Form */}
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              {/* Username for signin/signup */}
-              {(type === "signin" || type === "signup") && (
+              {/* Username for signup only */}
+              {type === "signup" && (
                 <div className="flex flex-col gap-2">
                   <label className="flex items-center gap-1 text-sm font-medium text-black">
                     Username
@@ -218,8 +218,10 @@ export default function AuthForm({ type }: AuthFormProps) {
                 </div>
               )}
 
-              {/* Email for signup and forgot-password */}
-              {(type === "signup" || type === "forgot-password") && (
+              {/* Email for signin/signup/forgot-password */}
+              {(type === "signin" ||
+                type === "signup" ||
+                type === "forgot-password") && (
                 <div className="flex flex-col gap-2">
                   <label className="flex items-center gap-1 text-sm font-medium text-black">
                     Email

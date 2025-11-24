@@ -5,7 +5,7 @@ export interface AuthFormProps {
 }
 
 export interface SignInFormData {
-  username: string;
+  email: string;
   password: string;
 }
 
@@ -13,7 +13,6 @@ export interface SignUpFormData {
   username: string;
   email: string;
   password: string;
-  
 }
 
 export interface ForgotPasswordFormData {
@@ -22,6 +21,5 @@ export interface ForgotPasswordFormData {
 
 export interface ResetPasswordFormData {
   password: string;
-  
   token?: string;
 }
