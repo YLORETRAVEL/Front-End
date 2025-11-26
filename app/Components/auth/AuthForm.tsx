@@ -19,7 +19,7 @@ import {
   googleLogin,
   sendResetEmail,
   confirmPasswordResetAction,
-  confirmEmailVerification
+  confirmEmailVerification,
 } from "@/firebase/auth-actions";
 
 import {
@@ -56,7 +56,7 @@ export default function AuthForm({ type }: AuthFormProps) {
     signup: "Create account",
     "forgot-password": "Forgot password",
     "reset-password": "Reset password",
-     "verify-email": "Verify Email", 
+    "verify-email": "Verify Email",
   };
 
   const buttonLabels: Record<AuthFormType, string> = {
@@ -64,7 +64,7 @@ export default function AuthForm({ type }: AuthFormProps) {
     signup: "Sign Up",
     "forgot-password": "Send Reset Link",
     "reset-password": "Reset Password",
-     "verify-email": "Verify Email",
+    "verify-email": "Verify Email",
   };
 
   const passwordRules = {
@@ -188,96 +188,103 @@ export default function AuthForm({ type }: AuthFormProps) {
 
             {/* Actual Form */}
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              {/* Username for signup only */}
+              {/* ------------------ VERIFY EMAIL SCREEN ------------------ */}
+              {type === "verify-email" && (
+                <div className="flex flex-col items-center gap-4">
+                  <p className="text-gray-600 text-sm">
+                    Click the button below to verify your email.
+                  </p>
+
+                  <button
+                    type="submit"
+                    className="h-12 w-full rounded-full text-white font-semibold bg-[#4DB9C8] hover:bg-[#50b0bd] transition-all"
+                  >
+                    Verify Email
+                  </button>
+                </div>
+              )}
+
+              {/* ------------------ SIGNUP SCREEN ------------------ */}
               {type === "signup" && (
-                <div className="flex flex-col gap-2">
-                  <label className="flex items-center gap-1 text-sm font-medium text-black">
-                    Username
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Username"
-                    className="h-12 px-4 rounded-full bg-gray-50 text-base text-gray-600 placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                    required
-                  />
-                </div>
-              )}
-
-              {/* Email for signin/signup/forgot-password */}
-              {(type === "signin" ||
-                type === "signup" ||
-                type === "forgot-password") && (
-                <div className="flex flex-col gap-2">
-                  <label className="flex items-center gap-1 text-sm font-medium text-black">
-                    Email
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Email Address"
-                    className="h-12 px-4 rounded-full bg-gray-50 text-base text-gray-600 placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                    required
-                  />
-                </div>
-              )}
-
-              {/* Password field (not for forgot-password) */}
-              {type !== "forgot-password" && (
-                <div className="flex flex-col gap-2">
-                  <label className="flex items-center gap-1 text-sm font-medium text-black">
-                    Password
-                    <span className="text-red-500">*</span>
-                  </label>
-
-                  <div className="relative">
+                <>
+                  {/* USERNAME */}
+                  <div className="flex flex-col gap-2">
+                    <label className="flex items-center gap-1 text-sm font-medium text-black">
+                      Username <span className="text-red-500">*</span>
+                    </label>
                     <input
-                      type={showPassword ? "text" : "password"}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Password"
-                      className="w-full h-12 px-4 pr-12 rounded-full bg-gray-50 text-base text-gray-600 placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                      type="text"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      placeholder="Username"
+                      className="h-12 px-4 rounded-full bg-gray-50 text-base text-gray-600 
+          placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                       required
                     />
-
-                    {/* Eye Toggle */}
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword((s) => !s)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black transition-colors"
-                    >
-                      <Image
-                        src={EyeIcon}
-                        alt="Toggle password visibility"
-                        className="w-5 h-5"
-                      />
-                    </button>
                   </div>
 
-                  {/* Confirm Password for signup/reset-password */}
-                  {(type === "signup" || type === "reset-password") && (
+                  {/* EMAIL */}
+                  <div className="flex flex-col gap-2">
+                    <label className="flex items-center gap-1 text-sm font-medium text-black">
+                      Email <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Email Address"
+                      className="h-12 px-4 rounded-full bg-gray-50 text-base text-gray-600 placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                      required
+                    />
+                  </div>
+
+                  {/* PASSWORD + CONFIRM */}
+                  <div className="flex flex-col gap-2">
+                    <label className="flex items-center gap-1 text-sm font-medium text-black">
+                      Password <span className="text-red-500">*</span>
+                    </label>
+
+                    <div className="relative">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Password"
+                        className="w-full h-12 px-4 pr-12 rounded-full bg-gray-50 text-base text-gray-600 
+            placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                        required
+                      />
+
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword((s) => !s)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black transition-colors"
+                      >
+                        <Image
+                          src={EyeIcon}
+                          alt="Toggle password visibility"
+                          className="w-5 h-5"
+                        />
+                      </button>
+                    </div>
+
+                    {/* CONFIRM PASSWORD */}
                     <div className="mt-2">
                       <label className="flex items-center gap-1 text-sm font-medium text-black">
-                        Confirm Password
-                        <span className="text-red-500">*</span>
+                        Confirm Password <span className="text-red-500">*</span>
                       </label>
                       <input
                         type={showPassword ? "text" : "password"}
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         placeholder="Confirm Password"
-                        className="w-full h-12 px-4 rounded-full bg-gray-50 text-base text-gray-600 placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500 transition-all mt-1"
+                        className="w-full h-12 px-4 rounded-full bg-gray-50 text-base text-gray-600 placeholder:text-gray-400 
+            outline-none focus:ring-2 focus:ring-blue-500 transition-all mt-1"
                         required
                       />
                     </div>
-                  )}
 
-                  {/* 🔥 Password Validation Rules */}
-                  {(type === "signup" || type === "reset-password") && (
+                    {/* Validation Rules */}
                     <div className="mt-2 space-y-1 text-xs">
                       <ValidationItem
                         title="At least 8 characters"
@@ -300,61 +307,222 @@ export default function AuthForm({ type }: AuthFormProps) {
                         valid={passwordRules.special}
                       />
                     </div>
-                  )}
-                </div>
-              )}
+                  </div>
 
-              {/* Keep Signed In & Forgot link (only when signin) */}
-              {type === "signin" && (
-                <div className="flex justify-between items-center">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <div
-                      onClick={() => setKeepSignedIn((k) => !k)}
-                      className={`w-4 h-4 rounded flex items-center justify-center transition-colors ${
-                        keepSignedIn
-                          ? "bg-gray-100"
-                          : "bg-gray-50 border border-gray-300"
-                      }`}
-                    >
-                      {keepSignedIn && (
-                        <Image
-                          src={CheckIcon}
-                          alt="Checked"
-                          className="w-3 h-3 text-white"
-                        />
-                      )}
-                    </div>
-                    <span className="text-sm font-medium text-black">
-                      Keep me signed in
-                    </span>
-                  </label>
-                  <Link
-                    href="/auth/forgot-password"
-                    className="text-sm text-gray-500 underline hover:text-black transition-colors"
+                  {/* SIGNUP BUTTON */}
+                  <button
+                    type="submit"
+                    className={`h-12 rounded-full text-white font-semibold shadow-sm mt-2 transition-all 
+        ${
+          allValid
+            ? "bg-[#4DB9C8] hover:bg-[#50b0bd]"
+            : "bg-[#4DB9C8]/60 cursor-not-allowed"
+        }`}
+                    disabled={!allValid}
                   >
-                    Forgot password?
-                  </Link>
-                </div>
+                    Sign Up
+                  </button>
+                </>
               )}
 
-              {/* Submit */}
-              <button
-                type="submit"
-                className={`h-12 rounded-full text-white font-semibold shadow-sm mt-2 transition-all ${
-                  type === "signup" || type === "reset-password"
-                    ? allValid
-                      ? "bg-[#4DB9C8] hover:bg-[#50b0bd]"
-                      : "bg-[#4DB9C8]/60 cursor-not-allowed"
-                    : "bg-[#4DB9C8] hover:bg-[#50b0bd]"
-                }`}
-                disabled={
-                  type === "signup" || type === "reset-password"
-                    ? !allValid
-                    : false
-                }
-              >
-                {buttonLabels[type]}
-              </button>
+              {/* ------------------ SIGNIN SCREEN ------------------ */}
+              {type === "signin" && (
+                <>
+                  {/* EMAIL */}
+                  <div className="flex flex-col gap-2">
+                    <label className="flex items-center gap-1 text-sm font-medium text-black">
+                      Email <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Email Address"
+                      className="h-12 px-4 rounded-full bg-gray-50 text-base text-gray-600 placeholder:text-gray-400 outline-none 
+          focus:ring-2 focus:ring-blue-500 transition-all"
+                      required
+                    />
+                  </div>
+
+                  {/* PASSWORD */}
+                  <div className="flex flex-col gap-2">
+                    <label className="flex items-center gap-1 text-sm font-medium text-black">
+                      Password <span className="text-red-500">*</span>
+                    </label>
+
+                    <div className="relative">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Password"
+                        className="w-full h-12 px-4 pr-12 rounded-full bg-gray-50 text-base text-gray-600 outline-none 
+            placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 transition-all"
+                        required
+                      />
+
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword((s) => !s)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black transition-colors"
+                      >
+                        <Image src={EyeIcon} alt="Toggle" className="w-5 h-5" />
+                      </button>
+                    </div>
+
+                    {/* Keep Signed In + Forgot Link */}
+                    <div className="flex justify-between items-center">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <div
+                          onClick={() => setKeepSignedIn((k) => !k)}
+                          className={`w-4 h-4 rounded flex items-center justify-center transition-colors ${
+                            keepSignedIn
+                              ? "bg-gray-100"
+                              : "bg-gray-50 border border-gray-300"
+                          }`}
+                        >
+                          {keepSignedIn && (
+                            <Image
+                              src={CheckIcon}
+                              alt="Checked"
+                              className="w-3 h-3 text-white"
+                            />
+                          )}
+                        </div>
+                        <span className="text-sm font-medium text-black">
+                          Keep me signed in
+                        </span>
+                      </label>
+
+                      <Link
+                        href="/auth/forgot-password"
+                        className="text-sm text-gray-500 underline"
+                      >
+                        Forgot password?
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* SIGN IN BUTTON */}
+                  <button
+                    type="submit"
+                    className="h-12 rounded-full text-white font-semibold shadow-sm mt-2 bg-[#4DB9C8] hover:bg-[#50b0bd] transition-all"
+                  >
+                    Sign In
+                  </button>
+                </>
+              )}
+
+              {/* ------------------ FORGOT PASSWORD ------------------ */}
+              {type === "forgot-password" && (
+                <>
+                  <div className="flex flex-col gap-2">
+                    <label className="flex items-center gap-1 text-sm font-medium text-black">
+                      Email <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Email Address"
+                      className="h-12 px-4 rounded-full bg-gray-50 text-base text-gray-600 placeholder:text-gray-400 outline-none 
+          focus:ring-2 focus:ring-blue-500 transition-all"
+                      required
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="h-12 rounded-full text-white font-semibold bg-[#4DB9C8] hover:bg-[#50b0bd] transition-all"
+                  >
+                    Send Reset Link
+                  </button>
+                </>
+              )}
+
+              {/* ------------------ RESET PASSWORD ------------------ */}
+              {type === "reset-password" && (
+                <>
+                  {/* PASSWORD */}
+                  <div className="flex flex-col gap-2">
+                    <label className="flex items-center gap-1 text-sm font-medium text-black">
+                      New Password <span className="text-red-500">*</span>
+                    </label>
+
+                    <div className="relative">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="New Password"
+                        className="w-full h-12 px-4 pr-12 rounded-full bg-gray-50 text-base text-gray-600 outline-none 
+            placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 transition-all"
+                        required
+                      />
+
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword((s) => !s)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black transition-colors"
+                      >
+                        <Image src={EyeIcon} alt="Toggle" className="w-5 h-5" />
+                      </button>
+                    </div>
+
+                    {/* CONFIRM */}
+                    <div className="mt-2">
+                      <label className="flex items-center gap-1 text-sm font-medium text-black">
+                        Confirm Password <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        placeholder="Confirm Password"
+                        className="w-full h-12 px-4 rounded-full bg-gray-50 text-base text-gray-600 
+            placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500 transition-all mt-1"
+                        required
+                      />
+                    </div>
+
+                    {/* Validation Rules */}
+                    <div className="mt-2 space-y-1 text-xs">
+                      <ValidationItem
+                        title="At least 8 characters"
+                        valid={passwordRules.length}
+                      />
+                      <ValidationItem
+                        title="1 uppercase letter"
+                        valid={passwordRules.uppercase}
+                      />
+                      <ValidationItem
+                        title="1 lowercase letter"
+                        valid={passwordRules.lowercase}
+                      />
+                      <ValidationItem
+                        title="1 number"
+                        valid={passwordRules.number}
+                      />
+                      <ValidationItem
+                        title="1 special character"
+                        valid={passwordRules.special}
+                      />
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className={`h-12 rounded-full text-white font-semibold shadow-sm mt-2 transition-all ${
+                      allValid
+                        ? "bg-[#4DB9C8] hover:bg-[#50b0bd]"
+                        : "bg-[#4DB9C8]/60 cursor-not-allowed"
+                    }`}
+                    disabled={!allValid}
+                  >
+                    Reset Password
+                  </button>
+                </>
+              )}
             </form>
 
             {/* Divider */}
@@ -368,18 +536,20 @@ export default function AuthForm({ type }: AuthFormProps) {
             </div>
 
             {/* Social Buttons */}
-            <div className="flex flex-col gap-2">
-              <button
-                onClick={handleGoogle}
-                className="flex items-center justify-center gap-2 h-12 rounded-full bg-gray-50 shadow-sm hover:bg-gray-100 transition-all"
-                type="button"
-              >
-                <Image src={GoogleIcon} alt="Google" className="w-5 h-5" />
-                <span className="text-sm font-medium text-gray-600">
-                  Continue with Google
-                </span>
-              </button>
-            </div>
+            {type !== "verify-email" && (
+              <div className="flex flex-col gap-2">
+                <button
+                  onClick={handleGoogle}
+                  className="flex items-center justify-center gap-2 h-12 rounded-full bg-gray-50 shadow-sm hover:bg-gray-100 transition-all"
+                  type="button"
+                >
+                  <Image src={GoogleIcon} alt="Google" className="w-5 h-5" />
+                  <span className="text-sm font-medium text-gray-600">
+                    Continue with Google
+                  </span>
+                </button>
+              </div>
+            )}
 
             {/* Sign Up / Sign In link */}
             <div className="flex justify-center items-center gap-1 text-sm mt-4">

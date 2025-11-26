@@ -1,4 +1,6 @@
 export function ValidationItem({ title, valid }: { title: string; valid: boolean }) {
+
+  
   return (
     <div className="flex items-center gap-2">
       <span className={`text-sm ${valid ? "text-green-600" : "text-red-500"}`}>
