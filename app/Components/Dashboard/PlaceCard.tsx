@@ -1,9 +1,12 @@
 import { PlaceCardProps } from "@/app/types/dashboard";
 import { Star, MapPin } from "lucide-react";
 
+import ArrowDownIcon from "@/public/icons/shareicon.svg"
+import HeartIcon from "@/public/icons/hearticon.svg";
+import Image from "next/image";
+
 export default function PlaceCard({
   title,
-  location,
   description,
   rating,
   reviews,
@@ -12,47 +15,21 @@ export default function PlaceCard({
 }: PlaceCardProps) {
   return (
     <div className="relative w-full md:w-[410px] h-[250px] rounded-2xl overflow-hidden flex-shrink-0 group cursor-pointer">
-      <img
+      <Image
         src={image}
         alt={title}
-        className="absolute inset-0 w-full h-full object-cover transition-transform group-hover:scale-105"
+        width={800}
+        height={800}
+        className="absolute inset-0  object-cover transition-transform group-hover:scale-105"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent" />
       
       <div className="absolute top-3.5 right-4 flex gap-2">
-        <button className="w-8 h-8 bg-white/90 rounded-full flex items-center justify-center hover:bg-white transition-colors">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M8 2V14M8 2L3 7M8 2L13 7"
-              stroke="black"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+        <button >
+          <Image src={ArrowDownIcon.src} alt="arrow" width={40} height={40} />
         </button>
-        <button className="w-8 h-8 bg-white/90 rounded-full flex items-center justify-center hover:bg-white transition-colors">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M8 13L2.5 7.5C1.5 6.5 1 5 1.5 3.5C2 2 3.5 1 5 1C6 1 7 1.5 8 2.5C9 1.5 10 1 11 1C12.5 1 14 2 14.5 3.5C15 5 14.5 6.5 13.5 7.5L8 13Z"
-              stroke="black"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+        <button >
+          <Image src={HeartIcon.src} alt="heart"  width={40} height={40} />
         </button>
       </div>
 

@@ -8,7 +8,7 @@ import placeIcon from "../../../public/images/Mappin-ai.png";
 import MistoryIcon from "../../../public/images/closed-book-icon-1.png";
 import creatorsIcon from "../../../public/images/creator-plane.png";
 import hubIcon from "../../../public/images/bulb-book.png";
-
+import Image from "next/image";
 
 export default function Header() {
   return (
@@ -28,7 +28,7 @@ export default function Header() {
       {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black/40"></div>
 
-      {/* ⭐ FULL-WIDTH HEADER BAR (LOGO LEFT, ICONS RIGHT) */}
+      {/* ⭐ FULL-WIDTH HEADER BAR */}
       <header
         className="
           absolute top-0 left-0 right-0 
@@ -39,10 +39,12 @@ export default function Header() {
           z-20
         "
       >
-        {/* Logo */}
-        <img
-          src={logo.src}
+        {/* ✔ FIXED LOGO */}
+        <Image
+          src={logo}               // no .src
           alt="Ylore Icon"
+          width={100}              // required
+          height={100}             // required
           className="w-20 h-20 sm:w-50 sm:h-24 object-contain"
         />
 
@@ -56,7 +58,6 @@ export default function Header() {
             <User className="w-8 h-8 sm:w-10 sm:h-10" strokeWidth={1.5} />
           </button>
 
-          {/* Notification Badge */}
           <div className="absolute -top-1 right-0 bg-ylore-error text-white text-xs font-medium px-2 py-0.5 rounded-full">
             1
           </div>
@@ -64,7 +65,7 @@ export default function Header() {
       </header>
 
       {/* HERO CONTENT */}
-      <div className="relative max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 pt-40 pb-12">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-40 pb-12">
         <div className="flex flex-col items-center text-center mb-12 lg:mb-28">
           <div className="max-w-2xl mb-8 lg:mb-16">
             <h1 className="text-white font-semibold text-4xl sm:text-5xl lg:text-7xl leading-tight mb-2">
@@ -78,28 +79,12 @@ export default function Header() {
           <div className="w-full max-w-2xl mb-8">
             <SearchBar />
 
-            {/* NAV ITEMS */}
             <nav className="flex items-center justify-center gap-6 sm:gap-8 lg:gap-12">
-              <NavItem
-                icon={earthImage.src}
-                label="Tours"
-              />
-              <NavItem
-                icon={placeIcon.src}
-                label="Places"
-              />
-              <NavItem
-                icon={MistoryIcon.src}
-                label="MiStory"
-              />
-              <NavItem
-                icon={creatorsIcon.src}
-                label="Creators"
-              />
-              <NavItem
-                icon={hubIcon.src}
-                label="HUB"
-              />
+              <NavItem icon={earthImage.src} label="Tours" />
+              <NavItem icon={placeIcon.src} label="Places" />
+              <NavItem icon={MistoryIcon.src} label="MiStory" />
+              <NavItem icon={creatorsIcon.src} label="Creators" />
+              <NavItem icon={hubIcon.src} label="HUB" />
             </nav>
           </div>
         </div>

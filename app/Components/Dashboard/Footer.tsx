@@ -2,7 +2,7 @@ import Image from "next/image";
 import InstagramIcon from "@/public/icons/InstaIcon.svg";
 import YoutubeIcon from "@/public/icons/YoutubeIcon.svg";
 import LinkedinIcon from "@/public/icons/tiktok-fill-svgrepo-com 1.svg"; 
-
+import footerLogo from "@/public/images/footerlogo.png";
 export default function Footer() {
   return (
     <footer className="bg-[#0A0A0A] py-16 md:py-24">
@@ -12,10 +12,12 @@ export default function Footer() {
             
             {/* Left Section */}
             <div className="flex flex-col gap-6 md:pr-12">
-              <img
-                src="https://api.builder.io/api/v1/image/assets/TEMP/2a8040ebae531b151134a40aa4496b3439884d4b?width=234"
+              <Image
+                src={footerLogo}
                 alt="Ylore Travel"
-                className="h-[84px] w-auto object-contain object-left"
+                height={100}
+                width={100}
+                className=" object-contain object-left"
               />
 
               <div className="flex flex-col gap-1">
@@ -26,15 +28,15 @@ export default function Footer() {
               {/* SOCIAL ICONS */}
               <div className="flex items-center gap-4">
                 <a href="#" className="hover:text-ylore-blue transition-colors">
-                  <Image src={InstagramIcon} alt="Instagram" className="w-6 h-6" />
+                  <Image src={InstagramIcon} alt="Instagram" width={20} height={20} />
                 </a>
 
                 <a href="#" className="hover:text-ylore-blue transition-colors">
-                  <Image src={LinkedinIcon} alt="LinkedIn" className="w-6 h-6" />
+                  <Image src={LinkedinIcon} alt="LinkedIn" width={20} height={20}  />
                 </a>
 
                 <a href="#" className="hover:text-ylore-blue transition-colors">
-                  <Image src={YoutubeIcon} alt="YouTube" className="w-6 h-6" />
+                  <Image src={YoutubeIcon} alt="YouTube" width={20} height={20} />
                 </a>
               </div>
             </div>

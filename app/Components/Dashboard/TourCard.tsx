@@ -1,23 +1,10 @@
 import { Star, DollarSign, Clock, TrendingUp } from "lucide-react";
 import Image from "next/image";
-import HeartIcon from "@/public/icons/heart.svg";
-import ShareIcon from "@/public/icons/share.svg";
-import TrendingIcon from "@/public/icons/trending.svg";
-import StarIcon from "@/public/icons/star.svg";
-import DollarIcon from "@/public/icons/dollar.svg";
-import ClockIcon from "@/public/icons/clock.svg";
+import { TourCardProps } from "@/app/types/dashboard";
+import HeartIcon from "@/public/icons/hearticon.svg";
+import ShareIcon from "@/public/icons/shareicon.svg";
 
-interface TourCardProps {
-  title: string;
-  location: string;
-  rating: number;
-  reviews: number;
-  category: string;
-  price: number;
-  duration: string;
-  difficulty: number;
-  image: string;
-}
+
 
 export default function TourCard({
   title,
@@ -32,47 +19,21 @@ export default function TourCard({
 }: TourCardProps) {
   return (
     <div className="relative w-full md:w-[410px] h-[250px] rounded-2xl overflow-hidden flex-shrink-0 group cursor-pointer">
-      <img
+      <Image
         src={image}
         alt={title}
-        className="absolute inset-0 w-full h-full object-cover transition-transform group-hover:scale-105"
+        width={800}
+        height={800}
+        className="absolute inset-0  object-cover transition-transform group-hover:scale-105"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent" />
       
       <div className="absolute top-3.5 right-4 flex gap-2">
-        <button className="w-8 h-8 bg-white/90 rounded-full flex items-center justify-center hover:bg-white transition-colors">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M8 13L2.5 7.5C1.5 6.5 1 5 1.5 3.5C2 2 3.5 1 5 1C6 1 7 1.5 8 2.5C9 1.5 10 1 11 1C12.5 1 14 2 14.5 3.5C15 5 14.5 6.5 13.5 7.5L8 13Z"
-              stroke="black"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+        <button >
+          <Image src={HeartIcon.src} alt="heart" width={40} height={40}  />
         </button>
-        <button className="w-8 h-8 bg-white/90 rounded-full flex items-center justify-center hover:bg-white transition-colors">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M8 2V14M8 2L3 7M8 2L13 7"
-              stroke="black"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+        <button >
+          <Image src={ShareIcon.src} alt="share" width={40} height={40} />
         </button>
       </div>
 
@@ -106,7 +67,7 @@ export default function TourCard({
             </div>
           </div>
           <button className="px-4 py-1.5 bg-white text-ylore-gray-500 rounded-full text-sm font-medium hover:bg-white/90 transition-colors">
-            {difficulty}/5
+            {difficulty}
           </button>
         </div>
       </div>

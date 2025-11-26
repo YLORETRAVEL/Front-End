@@ -33,6 +33,12 @@ interface AuthFormProps {
   type: AuthType;
 }
 
+function getErrorMessage(err: unknown): string {
+  if (err instanceof Error) return err.message;
+  if (typeof err === "string") return err;
+  return "An unexpected error occurred";
+}
+
 export default function AuthForm({ type }: AuthFormProps) {
   const router = useRouter();
 
@@ -62,7 +68,6 @@ export default function AuthForm({ type }: AuthFormProps) {
     e.preventDefault();
 
     try {
-      // keep me signed in → set Firebase persistence
       await setPersistence(
         auth,
         keepSignedIn ? browserLocalPersistence : browserSessionPersistence
@@ -84,6 +89,11 @@ export default function AuthForm({ type }: AuthFormProps) {
 
         // -------------------- SIGN UP --------------------
         case "signup": {
+          if (password !== confirmPassword) {
+            alert("Passwords do not match");
+            return;
+          }
+
           const userCred = await createUserWithEmailAndPassword(
             auth,
             email,
@@ -124,9 +134,9 @@ export default function AuthForm({ type }: AuthFormProps) {
           break;
         }
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      alert(err.message);
+      alert(getErrorMessage(err));
     }
   };
 
@@ -137,9 +147,9 @@ export default function AuthForm({ type }: AuthFormProps) {
 
       console.log("Google login:", result.user);
       router.push("/dashboard/Index");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      alert(err.message);
+      alert(getErrorMessage(err));
     }
   };
 
@@ -150,9 +160,9 @@ export default function AuthForm({ type }: AuthFormProps) {
 
       console.log("Apple login:", result.user);
       router.push("/dashboard/Index");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      alert(err.message);
+      alert(getErrorMessage(err));
     }
   };
 
@@ -270,6 +280,24 @@ export default function AuthForm({ type }: AuthFormProps) {
                     </button>
                   </div>
 
+                  {/* Confirm Password for signup/reset-password */}
+                  {(type === "signup" || type === "reset-password") && (
+                    <div className="mt-2">
+                      <label className="flex items-center gap-1 text-sm font-medium text-black">
+                        Confirm Password
+                        <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        placeholder="Confirm Password"
+                        className="w-full h-12 px-4 rounded-full bg-gray-50 text-base text-gray-600 placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500 transition-all mt-1"
+                        required
+                      />
+                    </div>
+                  )}
+
                   {/* 🔥 Password Validation Rules */}
                   {(type === "signup" || type === "reset-password") && (
                     <div className="mt-2 space-y-1 text-xs">
@@ -334,7 +362,14 @@ export default function AuthForm({ type }: AuthFormProps) {
               {/* Submit */}
               <button
                 type="submit"
-                className="h-12 rounded-full bg-[#4DB9C8] text-white font-semibold shadow-sm hover:bg-[#50b0bd] transition-all mt-2"
+                className={`h-12 rounded-full text-white font-semibold shadow-sm mt-2 transition-all ${
+                  type === "signup" || type === "reset-password"
+                    ? allValid
+                      ? "bg-[#4DB9C8] hover:bg-[#50b0bd]"
+                      : "bg-[#4DB9C8]/60 cursor-not-allowed"
+                    : "bg-[#4DB9C8] hover:bg-[#50b0bd]"
+                }`}
+                disabled={type === "signup" || type === "reset-password" ? !allValid : false}
               >
                 {buttonLabels[type]}
               </button>
@@ -355,6 +390,7 @@ export default function AuthForm({ type }: AuthFormProps) {
               <button
                 onClick={handleGoogleSignIn}
                 className="flex items-center justify-center gap-2 h-12 rounded-full bg-gray-50 shadow-sm hover:bg-gray-100 transition-all"
+                type="button"
               >
                 <Image src={GoogleIcon} alt="Google" className="w-5 h-5" />
                 <span className="text-sm font-medium text-gray-600">
@@ -365,6 +401,7 @@ export default function AuthForm({ type }: AuthFormProps) {
               <button
                 onClick={handleAppleSignIn}
                 className="flex items-center justify-center gap-2 h-12 rounded-full bg-gray-50 shadow-sm hover:bg-gray-100 transition-all"
+                type="button"
               >
                 <Image src={AppleIcon} alt="Apple" className="w-5 h-5" />
                 <span className="text-sm font-medium text-gray-600">
@@ -377,7 +414,7 @@ export default function AuthForm({ type }: AuthFormProps) {
             <div className="flex justify-center items-center gap-1 text-sm mt-4">
               {type === "signin" ? (
                 <>
-                  <span className="text-gray-500">Don't have an account?</span>
+                  <span className="text-gray-500">Don&apos;t have an account?</span>
                   <Link
                     href="/auth/signup"
                     className="text-black underline hover:text-blue-500 transition-colors"

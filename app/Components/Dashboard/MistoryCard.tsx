@@ -1,6 +1,7 @@
 
 import { MiStoryCardProps } from "@/app/types/dashboard";
 import { Clock, Library } from "lucide-react";
+import Image from "next/image";
 
 
 export default function MiStoryCard({
@@ -13,7 +14,7 @@ export default function MiStoryCard({
 }: MiStoryCardProps) {
   return (
     <div className="relative w-full md:w-[410px] h-[250px] rounded-2xl overflow-hidden flex-shrink-0 group cursor-pointer">
-      <img
+      <Image
         src={image}
         alt={title}
         className="absolute inset-0 w-full h-full object-cover transition-transform group-hover:scale-105"
