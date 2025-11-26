@@ -2,36 +2,34 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
+
 import authFormImage from "../../../public/images/authform.png";
 import logo from "../../../public/icons/logo.svg";
 import EyeIcon from "../../../public/icons/EyeClosed.svg";
 import CheckIcon from "../../../public/icons/Checkbox.svg";
 import GoogleIcon from "../../../public/icons/googlelogin.svg";
-import AppleIcon from "../../../public/icons/applelogin.svg";
+
 import { ValidationItem } from "./ValidationItem";
+
 import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  sendPasswordResetEmail,
-  confirmPasswordReset,
-  GoogleAuthProvider,
-  OAuthProvider,
-  signInWithPopup,
-  sendEmailVerification,
+  emailSignup,
+  emailLogin,
+  googleLogin,
+  sendResetEmail,
+  confirmPasswordResetAction,
+  confirmEmailVerification
+} from "@/firebase/auth-actions";
+
+import {
   setPersistence,
   browserLocalPersistence,
   browserSessionPersistence,
 } from "firebase/auth";
-
 import { auth } from "@/firebase/auth";
 
-type AuthType = "signin" | "signup" | "forgot-password" | "reset-password";
-
-interface AuthFormProps {
-  type: AuthType;
-}
+import type { AuthFormProps, AuthFormType } from "@/app/types/auth";
 
 function getErrorMessage(err: unknown): string {
   if (err instanceof Error) return err.message;
@@ -41,6 +39,9 @@ function getErrorMessage(err: unknown): string {
 
 export default function AuthForm({ type }: AuthFormProps) {
   const router = useRouter();
+  const params = useSearchParams();
+
+  const oobCode = params.get("oobCode");
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -50,120 +51,20 @@ export default function AuthForm({ type }: AuthFormProps) {
   const [keepSignedIn, setKeepSignedIn] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const titles: Record<AuthType, string> = {
+  const titles: Record<AuthFormType, string> = {
     signin: "Sign in",
     signup: "Create account",
     "forgot-password": "Forgot password",
     "reset-password": "Reset password",
+     "verify-email": "Verify Email", 
   };
 
-  const buttonLabels: Record<AuthType, string> = {
+  const buttonLabels: Record<AuthFormType, string> = {
     signin: "Sign In",
     signup: "Sign Up",
     "forgot-password": "Send Reset Link",
     "reset-password": "Reset Password",
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    try {
-      await setPersistence(
-        auth,
-        keepSignedIn ? browserLocalPersistence : browserSessionPersistence
-      );
-
-      switch (type) {
-        // -------------------- SIGN IN --------------------
-        case "signin": {
-          const userCred = await signInWithEmailAndPassword(
-            auth,
-            email,
-            password
-          );
-          console.log("Signed in:", userCred.user);
-
-          router.push("/dashboard/Index");
-          break;
-        }
-
-        // -------------------- SIGN UP --------------------
-        case "signup": {
-          if (password !== confirmPassword) {
-            alert("Passwords do not match");
-            return;
-          }
-
-          const userCred = await createUserWithEmailAndPassword(
-            auth,
-            email,
-            password
-          );
-          await sendEmailVerification(userCred.user);
-
-          alert("Account created! Please verify your email.");
-          router.push("/auth/signin");
-          break;
-        }
-
-        // -------------------- FORGOT PASSWORD --------------------
-        case "forgot-password": {
-          await sendPasswordResetEmail(auth, email);
-          alert("Password reset link sent to your email!");
-          break;
-        }
-
-        // -------------------- RESET PASSWORD --------------------
-        case "reset-password": {
-          const oob = new URL(window.location.href).searchParams.get("oobCode");
-
-          if (!oob) {
-            alert("Invalid reset link");
-            return;
-          }
-
-          if (password !== confirmPassword) {
-            alert("Passwords do not match");
-            return;
-          }
-
-          await confirmPasswordReset(auth, oob, password);
-
-          alert("Password reset successfully!");
-          router.push("/auth/signin");
-          break;
-        }
-      }
-    } catch (err: unknown) {
-      console.error(err);
-      alert(getErrorMessage(err));
-    }
-  };
-
-  const handleGoogleSignIn = async () => {
-    try {
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-
-      console.log("Google login:", result.user);
-      router.push("/dashboard/Index");
-    } catch (err: unknown) {
-      console.error(err);
-      alert(getErrorMessage(err));
-    }
-  };
-
-  const handleAppleSignIn = async () => {
-    try {
-      const provider = new OAuthProvider("apple.com");
-      const result = await signInWithPopup(auth, provider);
-
-      console.log("Apple login:", result.user);
-      router.push("/dashboard/Index");
-    } catch (err: unknown) {
-      console.error(err);
-      alert(getErrorMessage(err));
-    }
+     "verify-email": "Verify Email",
   };
 
   const passwordRules = {
@@ -174,12 +75,89 @@ export default function AuthForm({ type }: AuthFormProps) {
     special: /[!@#$%^&*(),.?":{}|<>]/.test(password),
   };
 
-  const allValid =
-    passwordRules.length &&
-    passwordRules.uppercase &&
-    passwordRules.lowercase &&
-    passwordRules.number &&
-    passwordRules.special;
+  const allValid = Object.values(passwordRules).every(Boolean);
+
+  // ---------------------------- SUBMIT HANDLER ----------------------------
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      await setPersistence(
+        auth,
+        keepSignedIn ? browserLocalPersistence : browserSessionPersistence
+      );
+
+      switch (type) {
+        // -------------------------------- SIGNIN --------------------------------
+        case "signin": {
+          const user = await emailLogin(email, password, keepSignedIn);
+          console.log("Logged in user:", user.user);
+          router.push("/dashboard/Index");
+          break;
+        }
+
+        case "verify-email": {
+          if (!oobCode) {
+            alert("Invalid verification link.");
+            return;
+          }
+
+          await confirmEmailVerification(oobCode);
+
+          alert("Email verified successfully!");
+          router.push("/auth/signin");
+          break;
+        }
+
+        // -------------------------------- SIGNUP --------------------------------
+        case "signup": {
+          await emailSignup(email, password, confirmPassword);
+          alert("Account created! Please verify your email.");
+          router.push("/auth/signin");
+          break;
+        }
+
+        // ----------------------------- FORGOT PASSWORD --------------------------
+        case "forgot-password": {
+          await sendResetEmail(email);
+          alert("Reset password link sent! Check your email.");
+          break;
+        }
+
+        // ----------------------------- RESET PASSWORD ---------------------------
+        case "reset-password": {
+          if (!oobCode) {
+            alert("Invalid or missing reset token.");
+            return;
+          }
+
+          if (password !== confirmPassword) {
+            alert("Passwords do not match.");
+            return;
+          }
+
+          await confirmPasswordResetAction(oobCode, password);
+
+          alert("Password reset successfully!");
+          router.push("/auth/signin");
+          break;
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      alert(getErrorMessage(err));
+    }
+  };
+
+  // --------- GOOGLE LOGIN -----------
+  const handleGoogle = async () => {
+    try {
+      await googleLogin();
+      router.push("/dashboard/Index");
+    } catch (err) {
+      alert(getErrorMessage(err));
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center p-4">
@@ -369,7 +347,11 @@ export default function AuthForm({ type }: AuthFormProps) {
                       : "bg-[#4DB9C8]/60 cursor-not-allowed"
                     : "bg-[#4DB9C8] hover:bg-[#50b0bd]"
                 }`}
-                disabled={type === "signup" || type === "reset-password" ? !allValid : false}
+                disabled={
+                  type === "signup" || type === "reset-password"
+                    ? !allValid
+                    : false
+                }
               >
                 {buttonLabels[type]}
               </button>
@@ -388,7 +370,7 @@ export default function AuthForm({ type }: AuthFormProps) {
             {/* Social Buttons */}
             <div className="flex flex-col gap-2">
               <button
-                onClick={handleGoogleSignIn}
+                onClick={handleGoogle}
                 className="flex items-center justify-center gap-2 h-12 rounded-full bg-gray-50 shadow-sm hover:bg-gray-100 transition-all"
                 type="button"
               >
@@ -397,24 +379,15 @@ export default function AuthForm({ type }: AuthFormProps) {
                   Continue with Google
                 </span>
               </button>
-
-              <button
-                onClick={handleAppleSignIn}
-                className="flex items-center justify-center gap-2 h-12 rounded-full bg-gray-50 shadow-sm hover:bg-gray-100 transition-all"
-                type="button"
-              >
-                <Image src={AppleIcon} alt="Apple" className="w-5 h-5" />
-                <span className="text-sm font-medium text-gray-600">
-                  Continue with Apple
-                </span>
-              </button>
             </div>
 
             {/* Sign Up / Sign In link */}
             <div className="flex justify-center items-center gap-1 text-sm mt-4">
               {type === "signin" ? (
                 <>
-                  <span className="text-gray-500">Don&apos;t have an account?</span>
+                  <span className="text-gray-500">
+                    Don&apos;t have an account?
+                  </span>
                   <Link
                     href="/auth/signup"
                     className="text-black underline hover:text-blue-500 transition-colors"

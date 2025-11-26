@@ -4,8 +4,6 @@ import { TourCardProps } from "@/app/types/dashboard";
 import HeartIcon from "@/public/icons/hearticon.svg";
 import ShareIcon from "@/public/icons/shareicon.svg";
 
-
-
 export default function TourCard({
   title,
   location,
@@ -27,12 +25,12 @@ export default function TourCard({
         className="absolute inset-0  object-cover transition-transform group-hover:scale-105"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent" />
-      
+
       <div className="absolute top-3.5 right-4 flex gap-2">
-        <button >
-          <Image src={HeartIcon.src} alt="heart" width={40} height={40}  />
+        <button>
+          <Image src={HeartIcon.src} alt="heart" width={40} height={40} />
         </button>
-        <button >
+        <button>
           <Image src={ShareIcon.src} alt="share" width={40} height={40} />
         </button>
       </div>
@@ -44,7 +42,7 @@ export default function TourCard({
           </div>
           <span className="text-white text-sm font-medium">{category}</span>
         </div>
-        
+
         <div>
           <h3 className="text-white text-lg font-semibold mb-1">{title}</h3>
           <p className="text-white/90 text-sm">{location}</p>
