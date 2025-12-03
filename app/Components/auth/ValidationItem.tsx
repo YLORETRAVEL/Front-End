@@ -12,3 +12,4 @@ export function ValidationItem({ title, valid }: { title: string; valid: boolean
     </div>
   );
 }
+

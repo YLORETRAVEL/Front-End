@@ -1,11 +1,11 @@
-import Header from "../../Components/Dashboard/Header";
-import Footer from "../../Components/Dashboard/Footer";
+import Header from "../Components/Dashboard/Header";
+import Footer from "../Components/Dashboard/Footer";
 import TrendingSection from "@/app/Components/Dashboard/TrendingSection";
 import TourCard from "@/app/Components/Dashboard/TourCard";
 import PlaceCard from "@/app/Components/Dashboard/PlaceCard";
 import MiStoryCard from "@/app/Components/Dashboard/MistoryCard";
 import Image from "next/image";
-import mapImage from "../../../public/images/map.png";
+import mapImage from "../../public/images/map.png";
 import { tours, places, miStories } from "./indexPageDummyData";
 
 export default function Index() {

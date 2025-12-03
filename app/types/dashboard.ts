@@ -1,4 +1,5 @@
 import { StaticImageData } from "next/image";
+import { ReactNode } from "react";
 
 export interface PlacesSectionProps {
   title: string;
@@ -40,3 +41,4 @@ export interface TourCardProps {
   difficulty: string;
   image: StaticImageData;
 }
+

@@ -13,7 +13,7 @@ export default function SearchBar() {
       <input
         type="text"
         placeholder="Find things to do"
-        className="flex-1 bg-transparent text-white placeholder:text-white outline-none text-base"
+        className="flex-1 bg-transparent text-black placeholder:text-black outline-none text-base"
       />
 
       <button>

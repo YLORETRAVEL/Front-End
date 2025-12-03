@@ -1,6 +1,6 @@
-import tourImage from "../../../public/images/tour.jpg";
-import placesImage from "../../../public/images/places.png";
-import miStoryImage from "../../../public/images/mistories.jpg";
+import tourImage from "../../public/images/tour.jpg";
+import placesImage from "../../public/images/places.png";
+import miStoryImage from "../../public/images/mistories.jpg";
 
 export const tours = [
     {
